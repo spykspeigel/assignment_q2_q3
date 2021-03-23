@@ -107,39 +107,78 @@ states:
         position: [0.2, -0.24, 0.85]
         completion:
           eval: 0.1
+
+  LookAtLeftHand:
+    base: StandingBase
+    tasks:
+      LookAtLeftHand:
+        type: lookAtSurface
+        body: dcamera
+        bodyVector: [1.0, -1.0, 1.0] 
+        surface: LeftGripper
+
+  LookAtRightHand:
+    base: StandingBase
+    tasks:
+      LookAtRightHand:
+        type: lookAtSurface
+        body: dcamera
+        bodyVector: [1.0, -1.0, 1.0] 
+        surface: RightGripper
+
+
+  LookAndMoveLeftHand:
+    base: Parallel
+    states: [LeftHandForward, LookAtLeftHand]
+    configs:
+      Pause:
+        duration: 5
+
+  LookAndMoveRightHand:
+    base: Parallel
+    states: [LookAtRightHand, RightHandForward]
+    configs:
+      Pause:
+        duration: 5
+
+  LookForward:
+    base: StandingBase
+    tasks:
+      LookAtRightHand:
+        type: lookAt
+        body: dcamera
+        bodyVector: [1.0, -1.0, 1.0] 
+        targetVector: [1.0, -0.9, 0.2]
+
+  LookAndMoveLeftHandBack:
+    base: Parallel
+    states: [LookForward, LeftHandMoveBack]
+    configs:
+      Pause:
+        duration: 5
+
+  LookAndMoveRightHandBack:
+    base: Parallel
+    states: [LookForward, RightHandMoveBack]
+
+
   BothHandMove:
     base: Parallel
-    states: [RightHandForward, LeftHandForward]
-    configs:
-      Pause:
-        duration: 5
+    states: [RightHandForward, LeftHandForward,LookForward]
+
   BothHandMoveBack:
     base: Parallel
-    states: [RightHandMoveBack, LeftHandMoveBack]
-    configs:
+    states: [RightHandMoveBack, LeftHandMoveBack,LookForward]
 
-      Pause:
-        duration: 5
-
-
-  StandingHalfSitting:
-    base: Parallel
-    states: [StandingBase, HalfSitting]
-    configs:
-      HalfSitting:
-        stiffness: 5
-        completion:
-          eval: 0.01
-# Transitions map
 transitions:
-- [LeftHandForward,         OK, LeftHandMoveBack, Auto]
-- [LeftHandMoveBack,       OK, RightHandForward, Auto]
-#- [StandingHalfSitting,        OK, RightHandForward, Auto]
-- [RightHandForward,        OK, RightHandMoveBack, Auto]
-- [RightHandMoveBack,        OK, BothHandMove, Auto]
+- [LookAndMoveLeftHand,         OK, LookAndMoveLeftHandBack, Auto]
+- [LookAndMoveLeftHandBack,       OK, LookAndMoveRightHand, Auto]
+
+- [LookAndMoveRightHand,        OK, LookAndMoveRightHandBack, Auto]
+- [LookAndMoveRightHandBack,        OK, BothHandMove, Auto]
 - [BothHandMove,        OK, BothHandMoveBack, Auto]
-- [BothHandMoveBack,        OK, LeftHandForward, Auto]
+- [BothHandMoveBack,        OK, LookAndMoveLeftHand, Auto]
 
 
 # Initial state
-init: LeftHandToWall
+init: LookAndMoveLeftHand
