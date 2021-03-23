@@ -1,13 +1,13 @@
 # assignment_q2_q3
 
 ## To build the project use the following commands.
-'''
-$ mkdir -p build
-$ cd build
-$ cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo
-$ make
-$ sudo make install
-'''
+
+`mkdir -p build
+cd build
+cmake ../ -DCMAKE_BUILD_TYPE=RelWithDebInfo
+make
+sudo make install`
+
 
 ##To run the code:
 
