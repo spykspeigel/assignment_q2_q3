@@ -130,16 +130,12 @@ states:
   LookAndMoveLeftHand:
     base: Parallel
     states: [LeftHandForward, LookAtLeftHand]
-    configs:
-      Pause:
-        duration: 5
+
 
   LookAndMoveRightHand:
     base: Parallel
     states: [LookAtRightHand, RightHandForward]
-    configs:
-      Pause:
-        duration: 5
+
 
   LookForward:
     base: StandingBase
